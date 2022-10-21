@@ -1,0 +1,170 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap');
+
+body,
+html {
+  height: 100%;
+  width: 100%;
+  margin: 0;
+  font-family: 'Roboto', sans-serif;
+  display: flex;
+  justify-content: space-between;
+  ul {
+    list-style: none;
+  }
+  li:before {
+    content: '- ';
+  }
+}
+
+body {
+  background-color: #ffe4d8;
+}
+
+.weather-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex: 2;
+  h1 {
+    align-self: center;
+  }
+  svg {
+    width: 50px;
+    margin-right: 10px;
+  }
+  .weather-city-container {
+    display: flex;
+  }
+  p {
+    margin: 0;
+    text-transform: capitalize;
+  }
+  ul {
+    padding: 0;
+  }
+}
+
+.weather-container-card > *:not(.weather-city-container) {
+  margin-left: 25px;
+}
+
+.search-container {
+  flex: 1;
+  border-left: 1px solid black;
+  display: flex;
+  flex-direction: column;
+  form {
+    margin-top: 100px;
+    align-self: center;
+    display: flex;
+  }
+  li {
+    display: inline-block;
+    width: fit-content;
+  }
+  li:hover {
+    color: lighten($color: #000000, $amount: 30);
+  }
+  ul {
+    display: flex;
+    flex-direction: column;
+  }
+  li:hover {
+    cursor: pointer;
+  }
+  svg {
+    width: 100%;
+    height: 100%;
+  }
+  button {
+    cursor: pointer;
+    width: 20px;
+    height: 20px;
+    padding: 0;
+    margin-right: 5px;
+    background: transparent;
+    border: transparent;
+  }
+  .divider {
+    border-top: 1px solid black;
+  }
+  .weather-background {
+    width: 100%;
+    height: 100%;
+    background-image: url('../media/cloudy_sky.jpg');
+    background-size: cover;
+  }
+}
+
+.switch {
+  position: relative;
+  display: inline-block;
+  width: 60px;
+  height: 34px;
+  input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+  }
+}
+
+.slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #ccc;
+  -webkit-transition: 0.4s;
+  transition: 0.4s;
+  &:before {
+    position: absolute;
+    content: '';
+    height: 26px;
+    width: 26px;
+    left: 4px;
+    bottom: 4px;
+    background-color: white;
+    -webkit-transition: 0.4s;
+    transition: 0.4s;
+  }
+}
+
+input:checked + .slider {
+  background-color: #2196f3;
+}
+
+input:focus + .slider {
+  box-shadow: 0 0 1px #2196f3;
+}
+
+input:checked + .slider:before {
+  -webkit-transform: translateX(26px);
+  -ms-transform: translateX(26px);
+  transform: translateX(26px);
+}
+
+@media screen and (max-width: 750px) {
+  body {
+    flex-direction: column;
+  }
+  .weather-container {
+    flex: 0;
+    border-bottom: 1px dashed black;
+    margin: 10px 0px;
+    label {
+      margin-bottom: 10px;
+    }
+  }
+  .search-container {
+    border: transparent;
+    ul {
+      align-self: center;
+      padding: 0;
+    }
+    form {
+      margin-top: 0;
+    }
+  }
+}
