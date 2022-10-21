@@ -33,7 +33,8 @@ const getWeatherData = async (city) => {
       lon = value.cityLon;
     });
     const response = await fetch(
-      `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=d1e0911657547ca6bbdf52eba721f9e0`
+      `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=d1e0911657547ca6bbdf52eba721f9e0`,
+      { mode: cors }
     );
     const data = await response.json();
     return data;
