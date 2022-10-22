@@ -12,7 +12,7 @@ const weatherImg = document.querySelector('.weather-city-container img');
 
 const getGeoData = async (city) => {
   try {
-    const response = await fetch(`http://api.openweathermap.org/geo/1.0/direct?q=${city}&appid=d1e0911657547ca6bbdf52eba721f9e0`);
+    const response = await fetch(`https://api.openweathermap.org/geo/1.0/direct?q=${city}&appid=d1e0911657547ca6bbdf52eba721f9e0`);
     const data = await response.json();
     return { cityLat: data[0].lat, cityLon: data[0].lon };
   } catch (err) {
@@ -52,7 +52,7 @@ const processDataFromJson = async (citySelected) => {
       humidity: value.main.humidity,
       wind: value.wind.speed,
       country: value.sys.country,
-      iconURL: `http://openweathermap.org/img/wn/${value.weather[0].icon}@2x.png`,
+      iconURL: `https://openweathermap.org/img/wn/${value.weather[0].icon}@2x.png`,
     };
     return data;
   } catch (err) {
