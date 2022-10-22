@@ -1,7 +1,5 @@
 const form = document.querySelector('form');
-const suggestedCities = Array.from(
-  document.querySelectorAll('.search-container li')
-);
+const suggestedCities = Array.from(document.querySelectorAll('.search-container li'));
 const temperature = document.querySelector('#temperature');
 const humidity = document.querySelector('#humidity');
 const wind = document.querySelector('#wind');
@@ -14,13 +12,12 @@ const weatherImg = document.querySelector('.weather-city-container img');
 
 const getGeoData = async (city) => {
   try {
-    const response = await fetch(
-      `http://api.openweathermap.org/geo/1.0/direct?q=${city}&appid=d1e0911657547ca6bbdf52eba721f9e0`
-    );
+    const response = await fetch(`http://api.openweathermap.org/geo/1.0/direct?q=${city}&appid=d1e0911657547ca6bbdf52eba721f9e0`);
     const data = await response.json();
     return { cityLat: data[0].lat, cityLon: data[0].lon };
   } catch (err) {
-    console.log('ERROR : ' + err);
+    console.log(`ERROR : ${err}`);
+    return err;
   }
 };
 
@@ -32,22 +29,22 @@ const getWeatherData = async (city) => {
       lat = value.cityLat;
       lon = value.cityLon;
     });
-    const response = await fetch(
-      `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=d1e0911657547ca6bbdf52eba721f9e0`,
-      { mode: cors }
-    );
+    const response = await fetch(`https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=d1e0911657547ca6bbdf52eba721f9e0`, {
+      mode: 'cors',
+    });
     const data = await response.json();
     return data;
   } catch (err) {
-    console.log('ERROR // ' + err);
+    console.log(`ERROR // + ${err}`);
+    return err;
   }
 };
 
-const processDataFromJson = async (city) => {
+const processDataFromJson = async (citySelected) => {
   try {
-    const value = await getWeatherData(city);
+    const value = await getWeatherData(citySelected);
     const data = {
-      city: city,
+      city: citySelected,
       weatherMain: value.weather[0].main,
       weatherDescription: value.weather[0].description,
       temperature: value.main.temp,
@@ -59,19 +56,30 @@ const processDataFromJson = async (city) => {
     };
     return data;
   } catch (err) {
-    console.log('ERROR // ' + err);
+    console.log(`ERROR // + ${err}`);
+    return err;
+  }
+};
+
+const convertTemperatureUnit = async (city) => {
+  const data = await processDataFromJson(city);
+  if (toggleSwitch.checked) {
+    temperature.textContent = `${Math.round(((data.temperature - 273.25) * 9) / 5 + 32)} °F`;
+    feltTemperature.textContent = `Felt temperature : ${Math.round(((data.feltTemperature - 273.25) * 9) / 5 + 32)} °F`;
+  } else {
+    temperature.textContent = `${Math.round(data.temperature - 273.25)} °C`;
+    feltTemperature.textContent = `Felt temperature : ${Math.round(data.feltTemperature - 273.25)} °C`;
   }
 };
 
 const displayData = async (city) => {
   try {
     const data = await processDataFromJson(city);
-    temperature.textContent = Math.round(data.temperature - 273.25) + ' °C';
-    humidity.textContent = 'Humidity : ' + data.humidity + '%';
-    wind.textContent = 'Wind speed : ' + data.wind + ' km/h';
-    feltTemperature.textContent =
-      'Felt temperature : ' + Math.round(data.feltTemperature - 273.25) + ' °C';
-    selectedCity.textContent = data.city + ', ' + data.country;
+    temperature.textContent = `${Math.round(data.temperature - 273.25)} °C`;
+    humidity.textContent = `Humidity : ${data.humidity} %`;
+    wind.textContent = `Wind speed : ${data.wind} km/h`;
+    feltTemperature.textContent = `Felt temperature : ${Math.round(data.feltTemperature - 273.25)} °C`;
+    selectedCity.textContent = `${data.city}, ${data.country}`;
     description.textContent = data.weatherDescription;
     weatherImg.src = data.iconURL;
 
@@ -79,41 +87,25 @@ const displayData = async (city) => {
       convertTemperatureUnit(city);
     });
   } catch (err) {
-    console.log('ERROR // ' + err);
+    console.log(`ERROR // ${err}`);
   }
 };
-
-form.addEventListener('submit', (e) => {
-  e.preventDefault();
-  const selectedCity = inputText.value;
-  displayData(selectedCity);
-  resetInput();
-});
 
 const resetInput = () => {
   inputText.value = '';
 };
+
+form.addEventListener('submit', (e) => {
+  e.preventDefault();
+  const formSelectedCity = inputText.value;
+  displayData(formSelectedCity);
+  resetInput();
+});
 
 suggestedCities.forEach((suggestedCity) => {
   suggestedCity.addEventListener('click', () => {
     displayData(suggestedCity.textContent);
   });
 });
-
-const convertTemperatureUnit = async (city) => {
-  const data = await processDataFromJson(city);
-  if (toggleSwitch.checked) {
-    temperature.textContent =
-      Math.round(((data.temperature - 273.25) * 9) / 5 + 32) + ' °F';
-    feltTemperature.textContent =
-      'Felt temperature : ' +
-      Math.round(((data.feltTemperature - 273.25) * 9) / 5 + 32) +
-      ' °F';
-  } else {
-    temperature.textContent = Math.round(data.temperature - 273.25) + ' °C';
-    feltTemperature.textContent =
-      'Felt temperature : ' + Math.round(data.feltTemperature - 273.25) + ' °C';
-  }
-};
 
 displayData('Paris');
